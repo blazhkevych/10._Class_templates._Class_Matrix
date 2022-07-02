@@ -7,42 +7,45 @@ using std::cout;
 using std::cin;
 using std::endl;
 
-//template <typename T>
+template <typename T>
 class Matrix
 {
 	// Указатель на двумерный динамический массив.
-	int** m_p;
+	T** m_p;
 	// Количество строк, количество столбцов.
 	int m_row, m_col;
 public:
-	Matrix();									 // Конструктор по умолчанию.
-	Matrix(int row, int col);					 // Конструктор с 2 параметрами.
-	Matrix(const Matrix& matrix);				 // Конструктор копирования.
-	Matrix(Matrix&& matrix);					 // Конструктор переноса.
-	~Matrix();									 // Деструктор.
-	Matrix& operator = (const Matrix& matrix);	 // Перегруженный оператор присваивания с копированием.
-	Matrix& operator = (Matrix&& matrix);		 // Перегруженный оператор присваивания с переносом.
+	Matrix();											// Конструктор по умолчанию.
+	Matrix(int row, int col);							// Конструктор с 2 параметрами.
+	Matrix(const Matrix& matrix);						// Конструктор копирования.
+	Matrix(Matrix&& matrix);							// Конструктор переноса.
+	~Matrix();											// Деструктор.
+	Matrix<T>& operator = (const Matrix& matrix);		// Перегруженный оператор присваивания с копированием.
+	Matrix<T>& operator = (Matrix&& matrix);			// Перегруженный оператор присваивания с переносом.
 
 	//// Увеличение на 1 каждого элемента матрицы:
-	Matrix& operator ++();						 // Префиксный инкремент.
-	Matrix operator ++(int);					 // Постфиксный инкремент.
+	Matrix<T>& operator ++();							// Префиксный инкремент.
+	Matrix<T> operator ++(int);							// Постфиксный инкремент.
 
 	//// Уменьшение на 1 каждого элемента матрицы:
-	Matrix& operator --();						 // Префиксный декремент.
-	Matrix operator --(int);					 // Постфиксный декремент.
-	Matrix operator+(const Matrix& matrix) const;// Сложение матриц.
-	Matrix operator*(const Matrix& matrix) const;// Умножение матриц.
-	int& operator()(int row, int col);			 // Установка / получение значения элемента матрицы.	
-	int*& operator [] (int index);				 // Перегруженный оператор индексации.
+	Matrix<T>& operator --();							// Префиксный декремент.
+	Matrix<T> operator --(int);							// Постфиксный декремент.
+	Matrix<T> operator+(const Matrix& matrix) const;	// Сложение матриц.
+	Matrix operator*(const Matrix& matrix) const;		// Умножение матриц.
+	int& operator()(int row, int col);					// Установка / получение значения элемента матрицы.	
+	int*& operator [] (int index);						// Перегруженный оператор индексации.
 
 	// Перегруженный оператор <<. Печать матрицы.
-	friend ostream& operator << (ostream& cout, Matrix& matrix);
+	template<typename T>
+	friend ostream& operator << (ostream& cout, Matrix<T>& matrix);
 
 	// Перегруженный оператор >>. Ввод данных в матрицу.
-	friend istream& operator >> (istream& cin, Matrix& matrix);
+	template<typename T>
+	friend istream& operator >> (istream& cin, Matrix<T>& matrix);
 
 	// Функция автоматической инициализации массива.
-	friend Matrix& Init(Matrix& matrix);
+	template<typename T>
+	friend Matrix<T>& Init(Matrix<T>& matrix);
 };
 
 ///////////////////////////////////////////////
@@ -50,7 +53,8 @@ public:
 ///////////////////////////////////////////////
 
 // Конструктор по умолчанию.
-Matrix::Matrix() :m_p{ nullptr }, m_row{ 0 }, m_col(0){};
+template<typename T>
+Matrix<T>::Matrix() :m_p{ nullptr }, m_row{ 0 }, m_col(0){};
 //{
 //	m_p = nullptr;
 //	m_row = 0;
@@ -58,23 +62,25 @@ Matrix::Matrix() :m_p{ nullptr }, m_row{ 0 }, m_col(0){};
 //}
 
 // Конструктор с 2 параметрами.
-Matrix::Matrix(int row, int col) :m_row{ row }, m_col(col)
+template<typename T>
+Matrix<T>::Matrix(int row, int col) :m_row{ row }, m_col(col)
 {
 	/*m_row = row;
 	m_col = col;*/
-	m_p = new int* [m_row]();
+	m_p = new T * [m_row]();
 	for (int i = 0; i < m_row; i++)
-		m_p[i] = new int[m_col]();
+		m_p[i] = new T[m_col]();
 }
 
 //Конструктор копирования.
-Matrix::Matrix(const Matrix& matrix) :m_row{ matrix.m_row }, m_col{ matrix.m_col }
+template<typename T>
+Matrix<T>::Matrix(const Matrix& matrix) :m_row{ matrix.m_row }, m_col{ matrix.m_col }
 {
 	/*m_row = matrix.m_row;
 	m_col = matrix.m_col;*/
-	m_p = new int* [m_row];
+	m_p = new T * [m_row];
 	for (int i = 0; i < m_row; i++)
-		m_p[i] = new int[m_col];
+		m_p[i] = new T[m_col];
 
 	for (int i = 0; i < m_row; i++)
 	{
@@ -87,7 +93,8 @@ Matrix::Matrix(const Matrix& matrix) :m_row{ matrix.m_row }, m_col{ matrix.m_col
 
 // Реализация семантики переноса с использованием r-value ссылок.
 // Конструктор переноса.
-Matrix::Matrix(Matrix&& matrix)
+template<typename T>
+Matrix<T>::Matrix(Matrix&& matrix)
 	: m_p{ matrix.m_p }, m_row{ matrix.m_row }, m_col{ matrix.m_col }
 {
 	// Присваивание.
@@ -102,7 +109,8 @@ Matrix::Matrix(Matrix&& matrix)
 }
 
 // Деструктор.
-Matrix::~Matrix()
+template<typename T>
+Matrix<T>::~Matrix()
 {
 	for (int i = 0; i < m_row; i++)
 		delete[] m_p[i];
@@ -110,7 +118,8 @@ Matrix::~Matrix()
 }
 
 // Перегруженный оператор присваивания с копированием.
-Matrix& Matrix::operator=(const Matrix& matrix)
+template<typename T>
+Matrix<T>& Matrix<T>::operator=(const Matrix& matrix)
 {
 	if (this == &matrix) // Если самоприсваивание.
 		return *this;
@@ -119,9 +128,9 @@ Matrix& Matrix::operator=(const Matrix& matrix)
 		delete[] m_p[i];
 	delete[] m_p;
 
-	m_p = new int* [matrix.m_row]; // Выделение памяти под входящий обьект.
+	m_p = new T * [matrix.m_row]; // Выделение памяти под входящий обьект.
 	for (int i = 0; i < matrix.m_row; i++)
-		m_p[i] = new int[matrix.m_col];
+		m_p[i] = new T[matrix.m_col];
 
 	// Копируем данные из входящего обьекта в принимающий.
 	m_row = matrix.m_row;
@@ -134,7 +143,8 @@ Matrix& Matrix::operator=(const Matrix& matrix)
 }
 
 // Перегруженный оператор присваивания с переносом.
-Matrix& Matrix::operator=(Matrix&& matrix)
+template<typename T>
+Matrix<T>& Matrix<T>::operator=(Matrix&& matrix)
 {
 	if (this == &matrix) // Если самоприсваивание.
 		return *this;
@@ -157,7 +167,8 @@ Matrix& Matrix::operator=(Matrix&& matrix)
 }
 
 // Префиксный инкремент.
-Matrix& Matrix::operator++()
+template<typename T>
+Matrix<T>& Matrix<T>::operator++()
 {
 	for (int i = 0; i < m_row; i++)
 	{
@@ -170,7 +181,8 @@ Matrix& Matrix::operator++()
 }
 
 // Постфиксный инкремент.
-Matrix Matrix::operator++(int)
+template<typename T>
+Matrix<T> Matrix<T>::operator++(int)
 {
 	Matrix tmp = *this;
 	for (int i = 0; i < m_row; i++)
@@ -184,7 +196,8 @@ Matrix Matrix::operator++(int)
 }
 
 // Префиксный декремент.
-Matrix& Matrix::operator--()
+template<typename T>
+Matrix<T>& Matrix<T>::operator--()
 {
 	for (int i = 0; i < m_row; i++)
 	{
@@ -197,7 +210,8 @@ Matrix& Matrix::operator--()
 }
 
 // Постфиксный декремент.
-Matrix Matrix::operator--(int)
+template<typename T>
+Matrix<T> Matrix<T>::operator--(int)
 {
 	Matrix tmp = *this;
 	for (int i = 0; i < m_row; i++)
@@ -211,9 +225,10 @@ Matrix Matrix::operator--(int)
 }
 
 // Сложение матриц.
-Matrix Matrix::operator+(const Matrix& matrix) const
+template<typename T>
+Matrix<T> Matrix<T>::operator+(const Matrix& matrix) const
 {
-	Matrix result(matrix.m_row, matrix.m_col); // Если матрицы одинаковые, выполняем сложение.
+	Matrix<T> result(matrix.m_row, matrix.m_col); // Если матрицы одинаковые, выполняем сложение.
 	if (m_row == matrix.m_row && m_col == matrix.m_col)
 	{
 		// Копирование данных из matrix в новый массив.
@@ -230,9 +245,10 @@ Matrix Matrix::operator+(const Matrix& matrix) const
 }
 
 // Умножение матриц.
-Matrix Matrix::operator*(const Matrix& matrix) const
+template<typename T>
+Matrix<T> Matrix<T>::operator*(const Matrix& matrix) const
 {
-	Matrix result(m_row, matrix.m_col);
+	Matrix<T> result(m_row, matrix.m_col);
 
 	if (m_col == matrix.m_row)
 	{
@@ -256,13 +272,15 @@ Matrix Matrix::operator*(const Matrix& matrix) const
 }
 
 // Установка / получение значения элемента матрицы.
-int& Matrix::operator()(int row, int col)
+template<typename T>
+int& Matrix<T>::operator()(int row, int col)
 {
 	return m_p[row][col];
 }
 
 // Перегруженный оператор индексации.
-int*& Matrix::operator[](int index)
+template<typename T>
+int*& Matrix<T>::operator[](int index)
 {
 	if (index < 0 || index >= m_row)
 		return m_p[0]; // Не лучшее решение, но пока так.
@@ -270,7 +288,8 @@ int*& Matrix::operator[](int index)
 }
 
 // Перегруженный оператор <<. Печать матрицы.
-ostream& operator<<(ostream& cout, Matrix& matrix)
+template<typename T>
+ostream& operator<<(ostream& cout, Matrix<T>& matrix)
 {
 	cout << endl;
 	for (int i = 0; i < matrix.m_row; i++)
@@ -287,7 +306,8 @@ ostream& operator<<(ostream& cout, Matrix& matrix)
 }
 
 // Перегруженный оператор >>. Ввод данных в матрицу.
-istream& operator>>(istream& cin, Matrix& matrix)
+template<typename T>
+istream& operator>>(istream& cin, Matrix<T>& matrix)
 {
 	cout << endl;
 	for (int i = 0; i < matrix.m_row; i++)
@@ -301,14 +321,15 @@ istream& operator>>(istream& cin, Matrix& matrix)
 }
 
 // Функция автоматической инициализации массива.
-Matrix& Init(Matrix& matrix)
+template<typename T>
+Matrix<T>& Init(Matrix<T>& matrix)
 {
 	int min = 10; // Минимальное значение.
 	int max = 99; // Максимальное значение.
 	for (int i = 0; i < matrix.m_row; i++)
 	{
 		for (int j = 0; j < matrix.m_col; j++)
-			matrix.m_p[i][j] = (rand() % (max - min + 1) + min) * 0, 99; // Заполняет массив псевдослучайными числами.
+			matrix.m_p[i][j] = (rand() % (max - min + 1) + min) * 0.99; // Заполняет массив псевдослучайными числами.
 	}
 	return matrix;
 }

@@ -63,7 +63,7 @@ public:
 	Test operator--(int postfix);
 
 	//// Перегруженный оператор присваивания с копированием.
-	//Test& operator = (const Test& test);
+	Test& operator = (const Test& test);
 
 	// Перегрузка оператора ">" для "this > object".
 	bool operator > (const Test& test) const;
@@ -138,13 +138,14 @@ Test Test::operator*(const Test& test) const
 	return result;
 }
 
-Matrix f2()
+template <typename T>
+T f2()
 {
-	Matrix obj4(3, 3);
-	Init(obj4);
-	cout << "\n\t\t\tMatrix f2() returned obj4 :";
-	cout << obj4;
-	return obj4;
+	Matrix<int> obj4_int(3, 3);
+	Init(obj4_int);
+	cout << "\n\t\t\tMatrix f2() returned obj4_int :";
+	cout << obj4_int;
+	return obj4_int;
 }
 
 int main()
@@ -152,76 +153,201 @@ int main()
 	srand(time(0));
 
 	// Конструктор по умолчанию.
-	Matrix m0;
+	// int
+	Matrix<int> m0_int;
+	// double
+	Matrix<double> m0_double;
+	// class Test
+	Matrix<Test> m0_class;
 
 	// Конструктор с 2 параметрами.
-	Matrix m1(3, 3);
-	Init(m1);
-	cout << "\t\t\tm1:";
-	cout << m1;
+	// int
+	Matrix<int> m1_int(3, 3);
+	Init(m1_int);
+	cout << "\t\t\tm1_int:";
+	cout << m1_int;
+	// double
+	Matrix<double> m1_double(3, 3);
+	Init(m1_double);
+	cout << "\t\t\tm1_double:";
+	cout << m1_double;
+	// class Test
+	Matrix<Test> m1_class(3, 3);
+	Init(m1_class);
+	cout << "\t\t\tm1_class:";
+	cout << m1_class;
 
 	// Конструктор с 2 параметрами.
-	Matrix m2(3, 3);
-	Init(m2);
-	cout << "\t\t\tm2:";
-	cout << m2;
+	// int
+	Matrix<int> m2_int(3, 3);
+	Init(m2_int);
+	cout << "\t\t\tm2_int:";
+	cout << m2_int;
+	// double
+	Matrix<double> m2_double(3, 3);
+	Init(m2_double);
+	cout << "\t\t\tm2_double:";
+	cout << m2_double;
+	// class Test
+	Matrix<Test> m2_class(3, 3);
+	Init(m2_class);
+	cout << "\t\t\tm2_class:";
+	cout << m2_class;
 
 	//Конструктор копирования.
-	Matrix m3 = m1;
-	cout << "\t\t\tMatrix m3 = m1;";
-	cout << m3;
+	// int
+	Matrix<int> m3_int = m1_int;
+	cout << "\t\t\tMatrix m3_int = m1_int;";
+	cout << m3_int;
+	// double
+	Matrix<double> m3_double = m1_double;
+	cout << "\t\t\tMatrix m3_double = m1_double;";
+	cout << m3_double;
+	// class Test
+	Matrix<Test> m3_class = m1_class;
+	cout << "\t\t\tMatrix m3_class = m1_class;";
+	cout << m3_class;
 
 	// Реализация семантики переноса с использованием r-value ссылок.
 	// Конструктор переноса.
 	// Сложение матриц.
-	Matrix m4 = m1 + m2; // Конструктор переноса.
-	cout << "\t\t\tMatrix m4 = m1 + m2;";
-	cout << m4;
+	// int
+	Matrix<int> m4_int = m1_int + m2_int; // Конструктор переноса.
+	cout << "\t\t\tMatrix m4_int = m1_int + m2_int;";
+	cout << m4_int;
+	// double
+	Matrix<double> m4_double = m1_double + m2_double; // Конструктор переноса.
+	cout << "\t\t\tMatrix m4_double = m1_double + m2_double;";
+	cout << m4_double;
+	// class Test
+	Matrix<Test> m4_class = m1_class + m2_class; // Конструктор переноса.
+	cout << "\t\t\tMatrix m4_class = m1_class + m2_class;";
+	cout << m4_class;
 
 	// Перегруженный оператор присваивания с копированием.
-	Matrix m5(3, 3);
-	Init(m5);
-	cout << "\t\t\tm5:";
-	cout << m5;
-	cout << "\t\t\tm5 = m4;";
-	m5 = m4; // Присваивание с копированием.
-	cout << m5;
+	// int
+	Matrix<int> m5_int(3, 3);
+	Init(m5_int);
+	cout << "\t\t\tm5_int:";
+	cout << m5_int;
+	cout << "\t\t\tm5_int = m4_int;";
+	m5_int = m4_int; // Присваивание с копированием.
+	cout << m5_int;
+	// double
+	Matrix<double> m5_double(3, 3);
+	Init(m5_double);
+	cout << "\t\t\tm5_double:";
+	cout << m5_double;
+	cout << "\t\t\tm5_double = m4_double;";
+	m5_double = m4_double; // Присваивание с копированием.
+	cout << m5_double;
+	// class Test
+	Matrix<Test> m5_class(3, 3);
+	Init(m5_class);
+	cout << "\t\t\tm5_class:";
+	cout << m5_class;
+	cout << "\t\t\tm5_class = m4_class;";
+	m5_class = m4_class; // Присваивание с копированием.
+	cout << m5_class;
+
+	/*
+	Не работает !
 
 	// Перегруженный оператор присваивания с переносом.
-	Matrix m6(3, 3);
-	cout << "\t\t\tm6 = m2 = f2();";
-	m6 = m2 = f2(); // Присваивание с переносом.
-	cout << "\t\t\tm6:";
-	cout << m6;
+	// int
+	Matrix<int> m6_int(3, 3);
+	cout << "\t\t\tm6_int = m2_int = f2();";
+	m6_int = m2_int = f2(); // Присваивание с переносом.
+	cout << "\t\t\tm6_int:";
+	cout << m6_int;
+	// double
+	Matrix<double> m6_double(3, 3);
+	cout << "\t\t\tm6_double = m2_double = f2();";
+	m6_double = m2_double = f2(); // Присваивание с переносом.
+	cout << "\t\t\tm6_double:";
+	cout << m6_double;
+	// class Test
+	*/
+
 
 	// Умножение матриц.
-	Matrix m7(3, 3);
-	Init(m7);
-	cout << "\t\t\tm7:";
-	cout << m7;
-	Matrix m8(3, 3);
-	Init(m8);
-	cout << "\t\t\tm8:";
-	cout << m8;
-	Matrix m9(3, 3);
-	Init(m9);
-	cout << "\t\t\tm9:";
-	cout << m9;
-	cout << "\t\t\tm9 = m7 * m8;";
-	m9 = m7 * m8;
-	cout << m9;
+	// int
+	Matrix<int> m7_int(3, 3);
+	Init(m7_int);
+	cout << "\t\t\tm7_int:";
+	cout << m7_int;
+	Matrix<int> m8_int(3, 3);
+	Init(m8_int);
+	cout << "\t\t\tm8_int:";
+	cout << m8_int;
+	Matrix<int> m9_int(3, 3);
+	Init(m9_int);
+	cout << "\t\t\tm9_int:";
+	cout << m9_int;
+	cout << "\t\t\tm9_int = m7_int * m8_int;";
+	m9_int = m7_int * m8_int;
+	cout << m9_int;
+	// double
+	Matrix<double> m7_double(3, 3);
+	Init(m7_double);
+	cout << "\t\t\tm7_double:";
+	cout << m7_double;
+	Matrix<double> m8_double(3, 3);
+	Init(m8_double);
+	cout << "\t\t\tm8_double:";
+	cout << m8_double;
+	Matrix<double> m9_double(3, 3);
+	Init(m9_double);
+	cout << "\t\t\tm9_double:";
+	cout << m9_double;
+	cout << "\t\t\tm9_double = m7_double * m8_double;";
+	m9_double = m7_double * m8_double;
+	cout << m9_double;
+	// class Test
+	Matrix<Test> m7_class(3, 3);
+	Init(m7_class);
+	cout << "\t\t\tm7_class:";
+	cout << m7_class;
+	Matrix<Test> m8_class(3, 3);
+	Init(m8_class);
+	cout << "\t\t\tm8_class:";
+	cout << m8_class;
+	Matrix<Test> m9_class(3, 3);
+	Init(m9_class);
+	cout << "\t\t\tm9_class:";
+	cout << m9_class;
+	cout << "\t\t\tm9_class = m7_class * m8_class;";
+	m9_class = m7_class * m8_class;
+	cout << m9_class;
 
 	// Префиксный инкремент.
-	Matrix m11(3, 3);
-	Init(m11);
-	cout << "\t\t\tm11:";
-	cout << m11;
-	cout << "\t\t\t++m11;";
-	++m11;
-	cout << m11;
+	// int
+	Matrix<int> m11_int(3, 3);
+	Init(m11_int);
+	cout << "\t\t\tm11_int:";
+	cout << m11_int;
+	cout << "\t\t\t++m11_int;";
+	++m11_int;
+	cout << m11_int;
+	// double
+	Matrix<double> m11_double(3, 3);
+	Init(m11_double);
+	cout << "\t\t\tm11_double:";
+	cout << m11_double;
+	cout << "\t\t\t++m11_double;";
+	++m11_double;
+	cout << m11_double;
+	// class Test
+	Matrix<Test> m11_class(3, 3);
+	Init(m11_class);
+	cout << "\t\t\tm11_class:";
+	cout << m11_class;
+	cout << "\t\t\t++m11_class;";
+	++m11_class;
+	cout << m11_class;
 
 	// Постфиксный инкремент.
-	Matrix m12(3, 3);
+	Matrix<int> m12(3, 3);
 	Init(m12);
 	cout << "\t\t\tm12:";
 	cout << m12;
@@ -230,7 +356,7 @@ int main()
 	cout << m12;
 
 	// Префиксный декремент.
-	Matrix m13(3, 3);
+	Matrix<int> m13(3, 3);
 	Init(m13);
 	cout << "\t\t\tm13:";
 	cout << m13;
@@ -239,7 +365,7 @@ int main()
 	cout << m13;
 
 	// Постфиксный декремент.
-	Matrix m14(3, 3);
+	Matrix<int> m14(3, 3);
 	Init(m14);
 	cout << "\t\t\tm14:";
 	cout << m14;
@@ -248,7 +374,7 @@ int main()
 	cout << m14;
 
 	// Установка / получение значения элемента матрицы.
-	Matrix m15(3, 3);
+	Matrix<int> m15(3, 3);
 	Init(m15);
 	cout << "\t\t\tm15:";
 	cout << m15;
@@ -257,7 +383,7 @@ int main()
 	cout << m15;
 
 	// Перегруженный оператор индексации.
-	Matrix m16(3, 3);
+	Matrix<int> m16(3, 3);
 	Init(m16);
 	cout << "\t\t\tm16:";
 	cout << m16;
@@ -267,26 +393,26 @@ int main()
 
 	// Перегруженный оператор <<. Печать матрицы.
 	// Перегруженный оператор >>. Ввод данных в матрицу.	
-	Matrix m10(3, 3);
+	Matrix<int> m10(3, 3);
 	cout << "\t\t\tEnter m10:";
 	cin >> m10;
 	cout << "\t\t\tm10:";
 	cout << m10;
 
 	// Умножение матриц. Ручной ввод.
-	Matrix m17(3, 2);
+	Matrix<int> m17(3, 2);
 	cout << "\t\t\tEnter m17:";
 	cin >> m17;
 	//Init(m17);
 	cout << "\t\t\tm17:";
 	cout << m17;
-	Matrix m18(2, 3);
+	Matrix<int> m18(2, 3);
 	cout << "\t\t\tEnter m18:";
 	cin >> m18;
 	//Init(m18);
 	cout << "\t\t\tm18:";
 	cout << m18;
 	cout << "\t\t\tMatrix m19 = m17 * m18;";
-	Matrix m19 = m17 * m18;
+	Matrix<int> m19 = m17 * m18;
 	cout << m19;
 }

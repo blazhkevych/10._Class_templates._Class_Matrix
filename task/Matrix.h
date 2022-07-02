@@ -1,35 +1,39 @@
 ﻿#pragma once
+#include <iostream>
 #include <ostream>
 using std::ostream;
 using std::istream;
+using std::cout;
+using std::cin;
+using std::endl;
 
-template <typename T>
+//template <typename T>
 class Matrix
 {
 	// Указатель на двумерный динамический массив.
-	T** m_p;
+	int** m_p;
 	// Количество строк, количество столбцов.
 	int m_row, m_col;
 public:
-	Matrix();											// Конструктор по умолчанию.
-	Matrix(int row, int col);							// Конструктор с 2 параметрами.
-	Matrix(const Matrix<T>& matrix);					// Конструктор копирования.
-	Matrix(Matrix<T>&& matrix);							// Конструктор переноса.
-	~Matrix();											// Деструктор.
-	Matrix<T>& operator = (const Matrix<T>& matrix);	// Перегруженный оператор присваивания с копированием.
-	Matrix& operator = (Matrix&& matrix);				// Перегруженный оператор присваивания с переносом.
+	Matrix();									 // Конструктор по умолчанию.
+	Matrix(int row, int col);					 // Конструктор с 2 параметрами.
+	Matrix(const Matrix& matrix);				 // Конструктор копирования.
+	Matrix(Matrix&& matrix);					 // Конструктор переноса.
+	~Matrix();									 // Деструктор.
+	Matrix& operator = (const Matrix& matrix);	 // Перегруженный оператор присваивания с копированием.
+	Matrix& operator = (Matrix&& matrix);		 // Перегруженный оператор присваивания с переносом.
 
-	// Увеличение на 1 каждого элемента матрицы:
-	Matrix& operator ++();								// Префиксный инкремент.
-	Matrix operator ++(int);							// Постфиксный инкремент.
+	//// Увеличение на 1 каждого элемента матрицы:
+	Matrix& operator ++();						 // Префиксный инкремент.
+	Matrix operator ++(int);					 // Постфиксный инкремент.
 
-	// Уменьшение на 1 каждого элемента матрицы:
-	Matrix& operator --();								// Префиксный декремент.
-	Matrix operator --(int);							// Постфиксный декремент.
-	Matrix operator+(const Matrix& matrix) const;		// Сложение матриц.
-	Matrix operator*(const Matrix& matrix) const;		// Умножение матриц.
-	int& operator()(int row, int col);					// Установка / получение значения элемента матрицы.	
-	int*& operator [] (int index);						// Перегруженный оператор индексации.
+	//// Уменьшение на 1 каждого элемента матрицы:
+	Matrix& operator --();						 // Префиксный декремент.
+	Matrix operator --(int);					 // Постфиксный декремент.
+	Matrix operator+(const Matrix& matrix) const;// Сложение матриц.
+	Matrix operator*(const Matrix& matrix) const;// Умножение матриц.
+	int& operator()(int row, int col);			 // Установка / получение значения элемента матрицы.	
+	int*& operator [] (int index);				 // Перегруженный оператор индексации.
 
 	// Перегруженный оператор <<. Печать матрицы.
 	friend ostream& operator << (ostream& cout, Matrix& matrix);
@@ -285,8 +289,6 @@ ostream& operator<<(ostream& cout, Matrix& matrix)
 // Перегруженный оператор >>. Ввод данных в матрицу.
 istream& operator>>(istream& cin, Matrix& matrix)
 {
-
-	//Продолжить отсюда. Начать писать эту перегрузку.
 	cout << endl;
 	for (int i = 0; i < matrix.m_row; i++)
 	{
@@ -306,7 +308,7 @@ Matrix& Init(Matrix& matrix)
 	for (int i = 0; i < matrix.m_row; i++)
 	{
 		for (int j = 0; j < matrix.m_col; j++)
-			matrix.m_p[i][j] = rand() % (max - min + 1) + min; // Заполняет массив псевдослучайными числами.
+			matrix.m_p[i][j] = (rand() % (max - min + 1) + min) * 0, 99; // Заполняет массив псевдослучайными числами.
 	}
 	return matrix;
 }

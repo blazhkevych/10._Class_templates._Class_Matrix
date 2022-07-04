@@ -32,8 +32,8 @@ public:
 	Matrix<T> operator --(int);							// Постфиксный декремент.
 	Matrix<T> operator+(const Matrix& matrix) const;	// Сложение матриц.
 	Matrix operator*(const Matrix& matrix) const;		// Умножение матриц.
-	int& operator()(int row, int col);					// Установка / получение значения элемента матрицы.	
-	int*& operator [] (int index);						// Перегруженный оператор индексации.
+	T& operator()(int row, int col);					// Установка / получение значения элемента матрицы.	
+	T*& operator [] (int index);						// Перегруженный оператор индексации.
 
 	// Перегруженный оператор <<. Печать матрицы.
 	template<typename T>
@@ -46,6 +46,9 @@ public:
 	// Функция автоматической инициализации массива.
 	template<typename T>
 	friend Matrix<T>& Init(Matrix<T>& matrix);
+
+	// Перегруженный оператор += для сложения двух матриц.
+	Matrix<T>& operator += (const Matrix& matrix);
 };
 
 ///////////////////////////////////////////////
@@ -72,7 +75,7 @@ Matrix<T>::Matrix(int row, int col) :m_row{ row }, m_col(col)
 		m_p[i] = new T[m_col]();
 }
 
-//Конструктор копирования.
+// Конструктор копирования.
 template<typename T>
 Matrix<T>::Matrix(const Matrix& matrix) :m_row{ matrix.m_row }, m_col{ matrix.m_col }
 {
@@ -259,6 +262,7 @@ Matrix<T> Matrix<T>::operator*(const Matrix& matrix) const
 				for (int q = 0; q < m_col; q++)
 				{
 					result[i][j] += m_p[i][q] * matrix.m_p[q][j];
+					//result[i][j] = result[i][j] + (m_p[i][q] * matrix.m_p[q][j]);
 				}
 			}
 		}
@@ -273,18 +277,26 @@ Matrix<T> Matrix<T>::operator*(const Matrix& matrix) const
 
 // Установка / получение значения элемента матрицы.
 template<typename T>
-int& Matrix<T>::operator()(int row, int col)
+T& Matrix<T>::operator()(int row, int col)
 {
 	return m_p[row][col];
 }
 
 // Перегруженный оператор индексации.
 template<typename T>
-int*& Matrix<T>::operator[](int index)
+T*& Matrix<T>::operator[](int index)
 {
 	if (index < 0 || index >= m_row)
 		return m_p[0]; // Не лучшее решение, но пока так.
 	return m_p[index];
+}
+
+template<typename T>
+Matrix<T>& Matrix<T>::operator+=(const Matrix& matrix)
+{
+	*this = this->operator+(matrix);
+
+	return *this;
 }
 
 // Перегруженный оператор <<. Печать матрицы.

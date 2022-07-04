@@ -7,7 +7,7 @@
 объектов шаблонного класса важно типизировать шаблон
 разными типами данных (стандартными и пользовательскими).
 ################################################################################################
-		СТАТУС : Не готово.
+		СТАТУС : Готово.
 		ДОРАБОТКИ:
 *
 		ИЗВЕСТНЫЕ ОШИБКИ:
@@ -62,8 +62,12 @@ public:
 	// Уменьшение всех компонент вектора на единицу (постфикс).
 	Test operator--(int postfix);
 
-	//// Перегруженный оператор присваивания с копированием.
+	// Перегруженный оператор присваивания с копированием.
 	Test& operator = (const Test& test);
+
+
+	// Перегруженный оператор += для сложения двух Test.
+	Test& operator+=(const Test& test);
 
 	// Перегрузка оператора ">" для "this > object".
 	bool operator > (const Test& test) const;
@@ -72,6 +76,13 @@ public:
 	Test operator * (const Test& test) const;
 
 };
+
+Test& Test::operator+=(const Test& test)
+{
+	*this = this->operator+(test);
+
+	return *this;
+}
 
 ostream& operator<<(ostream& os, const Test& obj)
 {
@@ -125,9 +136,17 @@ Test Test::operator--(int postfix)
 	return tmp;
 }
 
+Test& Test::operator=(const Test& test)
+{
+	if (this == &test)
+		return *this;
+	m_a = test.m_a;
+
+	return *this;
+}
+
 bool Test::operator>(const Test& test) const
 {
-
 	return m_a > test.m_a ? m_a : test.m_a;
 }
 
@@ -138,14 +157,31 @@ Test Test::operator*(const Test& test) const
 	return result;
 }
 
-template <typename T>
-T f2()
+Matrix<int> function_int()
 {
 	Matrix<int> obj4_int(3, 3);
 	Init(obj4_int);
-	cout << "\n\t\t\tMatrix f2() returned obj4_int :";
+	cout << "\n\t\t\tMatrix function_int() returned obj4_int :";
 	cout << obj4_int;
 	return obj4_int;
+}
+
+Matrix<double> function_double()
+{
+	Matrix<double> obj4_double(3, 3);
+	Init(obj4_double);
+	cout << "\n\t\t\tMatrix function_double() returned obj4_double :";
+	cout << obj4_double;
+	return obj4_double;
+}
+
+Matrix<Test> function_class()
+{
+	Matrix<Test> obj4_class(3, 3);
+	Init(obj4_class);
+	cout << "\n\t\t\tMatrix function_class() returned obj4_class :";
+	cout << obj4_class;
+	return obj4_class;
 }
 
 int main()
@@ -250,25 +286,25 @@ int main()
 	m5_class = m4_class; // Присваивание с копированием.
 	cout << m5_class;
 
-	/*
-	Не работает !
-
 	// Перегруженный оператор присваивания с переносом.
 	// int
 	Matrix<int> m6_int(3, 3);
-	cout << "\t\t\tm6_int = m2_int = f2();";
-	m6_int = m2_int = f2(); // Присваивание с переносом.
+	cout << "\t\t\tm6_int = m2_int = function_int();";
+	m6_int = m2_int = function_int(); // Присваивание с переносом.
 	cout << "\t\t\tm6_int:";
 	cout << m6_int;
 	// double
 	Matrix<double> m6_double(3, 3);
-	cout << "\t\t\tm6_double = m2_double = f2();";
-	m6_double = m2_double = f2(); // Присваивание с переносом.
+	cout << "\t\t\tm6_double = m2_double = function_double();";
+	m6_double = m2_double = function_double(); // Присваивание с переносом.
 	cout << "\t\t\tm6_double:";
 	cout << m6_double;
 	// class Test
-	*/
-
+	Matrix<Test> m6_class(3, 3);
+	cout << "\t\t\tm6_class = m2_class = function_class();";
+	m6_class = m2_class = function_class(); // Присваивание с переносом.
+	cout << "\t\t\tm6_class:";
+	cout << m6_class;
 
 	// Умножение матриц.
 	// int
@@ -347,72 +383,203 @@ int main()
 	cout << m11_class;
 
 	// Постфиксный инкремент.
-	Matrix<int> m12(3, 3);
-	Init(m12);
-	cout << "\t\t\tm12:";
-	cout << m12;
-	cout << "\t\t\tm12++;";
-	m12++;
-	cout << m12;
+	// int
+	Matrix<int> m12_int(3, 3);
+	Init(m12_int);
+	cout << "\t\t\tm12_int:";
+	cout << m12_int;
+	cout << "\t\t\tm12_int++;";
+	m12_int++;
+	cout << m12_int;
+	// double
+	Matrix<double> m12_double(3, 3);
+	Init(m12_double);
+	cout << "\t\t\tm12_double:";
+	cout << m12_double;
+	cout << "\t\t\tm12_double++;";
+	m12_double++;
+	cout << m12_double;
+	// class Test
+	Matrix<Test> m12_class(3, 3);
+	Init(m12_class);
+	cout << "\t\t\tm12_class:";
+	cout << m12_class;
+	cout << "\t\t\tm12_class++;";
+	m12_class++;
+	cout << m12_class;
 
 	// Префиксный декремент.
-	Matrix<int> m13(3, 3);
-	Init(m13);
-	cout << "\t\t\tm13:";
-	cout << m13;
-	cout << "\t\t\t--m13;";
-	--m13;
-	cout << m13;
+	// int
+	Matrix<int> m13_int(3, 3);
+	Init(m13_int);
+	cout << "\t\t\tm13_int:";
+	cout << m13_int;
+	cout << "\t\t\t--m13_int;";
+	--m13_int;
+	cout << m13_int;
+	// double
+	Matrix<double> m13_double(3, 3);
+	Init(m13_double);
+	cout << "\t\t\tm13_double:";
+	cout << m13_double;
+	cout << "\t\t\t--m13_double;";
+	--m13_double;
+	cout << m13_double;
+	// class Test
+	Matrix<Test> m13_class(3, 3);
+	Init(m13_class);
+	cout << "\t\t\tm13_class:";
+	cout << m13_class;
+	cout << "\t\t\t--m13_class;";
+	--m13_class;
+	cout << m13_class;
 
 	// Постфиксный декремент.
-	Matrix<int> m14(3, 3);
-	Init(m14);
-	cout << "\t\t\tm14:";
-	cout << m14;
-	cout << "\t\t\tm14--;";
-	m14--;
-	cout << m14;
+	// int
+	Matrix<int> m14_int(3, 3);
+	Init(m14_int);
+	cout << "\t\t\tm14_int:";
+	cout << m14_int;
+	cout << "\t\t\tm14_int--;";
+	m14_int--;
+	cout << m14_int;
+	// double
+	Matrix<double> m14_double(3, 3);
+	Init(m14_double);
+	cout << "\t\t\tm14_double:";
+	cout << m14_double;
+	cout << "\t\t\tm14_double--;";
+	m14_double--;
+	cout << m14_double;
+	// class Test
+	Matrix<Test> m14_class(3, 3);
+	Init(m14_class);
+	cout << "\t\t\tm14_class:";
+	cout << m14_class;
+	cout << "\t\t\tm14_class--;";
+	m14_class--;
+	cout << m14_class;
 
 	// Установка / получение значения элемента матрицы.
-	Matrix<int> m15(3, 3);
-	Init(m15);
+	// int
+	Matrix<int> m15_int(3, 3);
+	Init(m15_int);
 	cout << "\t\t\tm15:";
-	cout << m15;
+	cout << m15_int;
 	cout << "\t\t\tm15(1, 2) = 999;";
-	m15(1, 2) = 999;
-	cout << m15;
+	m15_int(1, 2) = 999;
+	cout << m15_int;
+	// double
+	Matrix<double> m15_double(3, 3);
+	Init(m15_double);
+	cout << "\t\t\tm15_double:";
+	cout << m15_double;
+	cout << "\t\t\tm15_double(1, 2) = 999;";
+	m15_double(1, 2) = 999;
+	cout << m15_double;
+	// class Test
+	Matrix<Test> m15_class(3, 3);
+	Init(m15_class);
+	cout << "\t\t\tm15_class:";
+	cout << m15_class;
+	cout << "\t\t\tm15_class(1, 2) = 999;";
+	m15_class(1, 2) = 999;
+	cout << m15_class;
 
 	// Перегруженный оператор индексации.
-	Matrix<int> m16(3, 3);
-	Init(m16);
-	cout << "\t\t\tm16:";
-	cout << m16;
-	cout << "\t\t\tm16[1][2] = 999;";
-	m16[1][2] = 999;
-	cout << m16;
+	// int
+	Matrix<int> m16_int(3, 3);
+	Init(m16_int);
+	cout << "\t\t\tm16_int:";
+	cout << m16_int;
+	cout << "\t\t\tm16_int[1][2] = 999;";
+	m16_int[1][2] = 999;
+	cout << m16_int;
+	// double
+	Matrix<double> m16_double(3, 3);
+	Init(m16_double);
+	cout << "\t\t\tm16_double:";
+	cout << m16_double;
+	cout << "\t\t\tm16_double[1][2] = 999;";
+	m16_double[1][2] = 999;
+	cout << m16_double;
+	// class Test
+	Matrix<Test> m16_class(3, 3);
+	Init(m16_class);
+	cout << "\t\t\tm16_class:";
+	cout << m16_class;
+	cout << "\t\t\tm16_class[1][2] = 999;";
+	m16_class[1][2] = 999;
+	cout << m16_class;
 
 	// Перегруженный оператор <<. Печать матрицы.
-	// Перегруженный оператор >>. Ввод данных в матрицу.	
-	Matrix<int> m10(3, 3);
-	cout << "\t\t\tEnter m10:";
-	cin >> m10;
-	cout << "\t\t\tm10:";
-	cout << m10;
+	// Перегруженный оператор >>. Ввод данных в матрицу.
+	// int
+	Matrix<int> m10_int(3, 3);
+	cout << "\t\t\tEnter m10_int:";
+	cin >> m10_int;
+	cout << "\t\t\tm10_int:";
+	cout << m10_int;
+	// double
+	Matrix<double> m10_double(3, 3);
+	cout << "\t\t\tEnter m10_double:";
+	cin >> m10_double;
+	cout << "\t\t\tm10_double:";
+	cout << m10_double;
+	// class Test
+	Matrix<Test> m10_class(3, 3);
+	cout << "\t\t\tEnter m10_class:";
+	cin >> m10_class;
+	cout << "\t\t\tm10_class:";
+	cout << m10_class;
 
 	// Умножение матриц. Ручной ввод.
-	Matrix<int> m17(3, 2);
-	cout << "\t\t\tEnter m17:";
-	cin >> m17;
-	//Init(m17);
-	cout << "\t\t\tm17:";
-	cout << m17;
-	Matrix<int> m18(2, 3);
-	cout << "\t\t\tEnter m18:";
-	cin >> m18;
-	//Init(m18);
-	cout << "\t\t\tm18:";
-	cout << m18;
-	cout << "\t\t\tMatrix m19 = m17 * m18;";
-	Matrix<int> m19 = m17 * m18;
-	cout << m19;
+	// int
+	Matrix<int> m17_int(3, 2);
+	cout << "\t\t\tEnter m17_int:";
+	cin >> m17_int;
+	//Init(m17_int);
+	cout << "\n\t\t\tm17_int:";
+	cout << m17_int;
+	Matrix<int> m18_int(2, 3);
+	cout << "\t\t\tEnter m18_int:";
+	cin >> m18_int;
+	//Init(m18_int);
+	cout << "\n\t\t\tm18_int:";
+	cout << m18_int;
+	cout << "\t\t\tMatrix m19_int = m17_int * m18_int;";
+	Matrix<int> m19_int = m17_int * m18_int;
+	cout << m19_int;
+	// double
+	Matrix<double> m17_double(3, 2);
+	cout << "\t\t\tEnter m17_double:";
+	cin >> m17_double;
+	//Init(m17_double);
+	cout << "\n\t\t\tm17_double:";
+	cout << m17_double;
+	Matrix<double> m18_double(2, 3);
+	cout << "\t\t\tEnter m18_double:";
+	cin >> m18_double;
+	//Init(m18_double);
+	cout << "\n\t\t\tm18_double:";
+	cout << m18_double;
+	cout << "\t\t\tMatrix m19_double = m17_double * m18_double;";
+	Matrix<double> m19_double = m17_double * m18_double;
+	cout << m19_double;
+	// class Test
+	Matrix<Test> m17_class(3, 2);
+	cout << "\t\t\tEnter m17_class:";
+	cin >> m17_class;
+	//Init(m17_class);
+	cout << "\n\t\t\tm17_class:";
+	cout << m17_class;
+	Matrix<Test> m18_class(2, 3);
+	cout << "\t\t\tEnter m18_class:";
+	cin >> m18_class;
+	//Init(m18_class);
+	cout << "\n\t\t\tm18_class:";
+	cout << m18_class;
+	cout << "\t\t\tMatrix m19_class = m17_class * m18_class;";
+	Matrix<Test> m19_class = m17_class * m18_class;
+	cout << m19_class;
 }
